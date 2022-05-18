@@ -52,8 +52,8 @@ const  verifyRequest= (req,res,next)=>{
 async function run() {
     try {
         await client.connect();
-        const database = client.db("budgetApp");
-        const expencess = database.collection("expencess");
+        const database = client.db("todoApp");
+        const tasks = database.collection("tasks");
         console.log('Db connected')
 
 
@@ -66,21 +66,21 @@ async function run() {
 
 
         app.post('/addExpense',verifyRequest, async (req, res) => {
-            const expense = req.body;
-            const result = await expencess.insertOne(expense)
+            const task = req.body;
+            const result = await tasks.insertOne(task)
             // console.log("add user :" + user);
             res.send(result)
         })
 
-        app.get('/readExpense', async (req, res) => {
-            const result = await expencess.find({})
+        app.get('/readExpense',verifyRequest, async (req, res) => {
+            const result = await tasks.find({})
             res.send(await result.toArray())
         })
 
         app.delete('/deleteExpense/:id',verifyRequest, async (req, res) => {
            const id=req.params.id
            const query={_id:ObjectId(id)}
-           const result=await expencess.deleteOne(query)
+           const result=await tasks.deleteOne(query)
            res.send(result)
         })
 
@@ -92,9 +92,21 @@ async function run() {
             const updateDoc = {
                 $set: req.body,
               };
-            const result = await expencess.updateOne(filter, updateDoc, options);
+            const result = await tasks.updateOne(filter, updateDoc, options);
             res.send(result)
          })
+
+         app.put('/completeTask/:id',verifyRequest, async (req, res) => {
+            const id=req.params.id
+            const filter={_id:ObjectId(id)}
+            const options = { upsert: false };
+            const updateDoc = {
+                $set: req.body,
+              };
+            const result = await tasks.updateOne(filter, updateDoc, options);
+            res.send(result)
+         })
+
     } finally {
         // await client.close();
     }
