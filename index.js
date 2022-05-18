@@ -72,7 +72,7 @@ async function run() {
             res.send(result)
         })
 
-        app.get('/readExpense',verifyRequest, async (req, res) => {
+        app.get('/readExpense',async (req, res) => {
             const result = await tasks.find({})
             res.send(await result.toArray())
         })
