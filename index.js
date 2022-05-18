@@ -68,7 +68,7 @@ async function run() {
         app.post('/addExpense',verifyRequest, async (req, res) => {
             const task = req.body;
             const result = await tasks.insertOne(task)
-            // console.log("add user :" + user);
+            // console.l og("add user :" + user);
             res.send(result)
         })
 
